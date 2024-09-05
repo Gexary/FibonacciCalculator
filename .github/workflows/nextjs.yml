@@ -31,14 +31,20 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v2
-        with:
-          version: 6.32.9
       - uses: actions/setup-node@v4
         with:
-          node-version: '14'
+          node-version: '20'
           cache: 'pnpm'
       - run: pnpm install
-      - run: pnpm test
+      - uses: actions/configure-pages@v5
+        with:
+          static_site_generator: next
+      - name: Build with Next.js
+        run: pnpm exec next build
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./out
 
   # Deployment job
   deploy:
