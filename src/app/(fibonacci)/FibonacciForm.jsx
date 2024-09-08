@@ -1,8 +1,11 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { useIsLoading, useSendValue } from "@/hooks/fibonacci.context";
+import { Separator } from "@/components/ui/separator";
+import { Slider } from "@/components/ui/slider.jsx";
+import { useEndFibonacciReducer, useIsLoading, useSendValue } from "@/hooks/fibonacci.context";
 import { ReloadIcon } from "@radix-ui/react-icons";
 import { Calculator, MinusIcon, PlusIcon } from "lucide-react";
 import { useCallback, useState } from "react";
@@ -15,22 +18,38 @@ function convertToNumber(value) {
 
 export function FibonacciForm() {
   const sendValue = useSendValue();
+  const [option, setOption] = useState("oneNumber");
+  const endReducer = useEndFibonacciReducer();
+
+  const toggleOption = useCallback(
+    (value) => {
+      setOption(value);
+      endReducer();
+    },
+    [endReducer]
+  );
 
   const onSubmit = useCallback(
     (e) => {
       e.preventDefault();
       const formData = new FormData(e.target);
-      const value = convertToNumber(formData.get("value"));
-      if (value !== null) sendValue(value);
+      if (option === "oneNumber") {
+        const value = convertToNumber(formData.get("value"));
+        if (value !== null) sendValue(value);
+      } else {
+        const valueMin = convertToNumber(formData.get("valueMin"));
+        const valueMax = convertToNumber(formData.get("valueMax"));
+        if (valueMin !== null && valueMax !== null) sendValue(valueMin, valueMax);
+      }
     },
-    [sendValue]
+    [sendValue, option]
   );
 
   return (
     <form onSubmit={onSubmit}>
-      <NumberInput />
-      <div className="flex justify-center gap-2">
-        <ConfigSelect toggleOption={console.log} />
+      {option === "oneNumber" ? <NumberInput /> : <NumberRangeInput />}
+      <div className="flex justify-center gap-2 mt-10">
+        <ConfigSelect toggleOption={toggleOption} />
         <CalculateButton />
       </div>
     </form>
@@ -90,7 +109,7 @@ function NumberInput() {
         <MinusIcon className="h-4 w-4" />
         <span className="sr-only">Decrease</span>
       </Button>
-      <div className="flex-1 text-center mb-8">
+      <div className="flex-1 text-center">
         <input
           autoComplete="off"
           className="inline-block text-7xl font-bold tracking-tighter text-center outline-none w-full"
@@ -111,6 +130,21 @@ function NumberInput() {
         <span className="sr-only">Increase</span>
       </Button>
     </div>
+  );
+}
+
+function NumberRangeInput() {
+  const [range, setRange] = useState([0, 100]);
+
+  return (
+    <>
+      <div className="flex items-center gap-2 mb-8">
+        <Input name="valueMin" placeholder="Start" value={range[0]} onChange={(e) => setRange([e.target.value, range[1]])} />
+        <Separator orientation="vertical" />
+        <Input name="valueMax" placeholder="End" value={range[1]} onChange={(e) => setRange([range[0], e.target.value])} />
+      </div>
+      <Slider max={500} min={range[0]} step={1} value={range} onValueChange={setRange} />
+    </>
   );
 }
 

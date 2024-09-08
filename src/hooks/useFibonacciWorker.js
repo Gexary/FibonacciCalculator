@@ -27,17 +27,18 @@ export const useFibonacciWorker = () => {
       setResult(event.data);
     };
     return () => {
-      worker.current.terminate();
+      if (worker.current) worker.current.terminate();
       endReducer();
     };
-  }, [endReducer, setResult]);
+  }, [setResult, endReducer]);
 
-  const sendValue = (value) => {
+  const sendValue = (value, end = false) => {
     if (worker.current && !isLoading) {
+      if (end) value = [value, end];
       worker.current.postMessage(value);
       setValue(value);
     }
   };
 
-  return { result, isLoading, sendValue, value };
+  return { result, isLoading, sendValue, value, endReducer };
 };

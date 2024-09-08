@@ -29,6 +29,6 @@
     "src/hooks/useFibonacciWorker.js",
     "src/app/page.jsx",
     "src/app/(fibonacci)/FibonacciForm.jsx"
-  ],
+, "src/components/ui/slider.jsx"  ],
   "exclude": ["node_modules"]
 }

@@ -25,9 +25,16 @@ export const useFibonacciValue = () => {
   return value;
 };
 
+export const useEndFibonacciReducer = () => {
+  const { endReducer } = useContext(FibonacciContext);
+  return endReducer;
+};
+
 const FibonacciProvider = ({ children }) => {
-  const { result, isLoading, sendValue, value } = useFibonacciWorker();
-  return <FibonacciContext.Provider value={{ result, isLoading, sendValue, value }}>{children}</FibonacciContext.Provider>;
+  const { result, isLoading, sendValue, value, endReducer } = useFibonacciWorker();
+  return (
+    <FibonacciContext.Provider value={{ result, isLoading, sendValue, value, endReducer }}>{children}</FibonacciContext.Provider>
+  );
 };
 
 export default FibonacciProvider;

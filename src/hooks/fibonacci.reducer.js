@@ -21,7 +21,7 @@ export default function fibonacciReducer(state, action) {
     case SET_VALUE:
       return { ...state, value: action.payload, isLoading: true, result: null };
     case SET_RESULT:
-      return { ...state, result: action.payload, isLoading: false };
+      if (state.isLoading) return { ...state, result: action.payload, isLoading: false };
     case END_REDUCER:
       return { ...state, isLoading: false, result: null, value: null };
     default:

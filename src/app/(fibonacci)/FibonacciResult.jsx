@@ -1,4 +1,6 @@
 import { Button } from "@/components/ui/button";
+import { CardContent } from "@/components/ui/card";
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
 import { useFibonacciResult, useFibonacciValue } from "@/hooks/fibonacci.context";
 import { CheckIcon, ClipboardIcon } from "@radix-ui/react-icons";
 import { useCopyToClipboard } from "@uidotdev/usehooks";
@@ -11,7 +13,31 @@ export default function FibonacciResult() {
 
 function FibonacciTable() {
   const result = useFibonacciResult();
-  return <p className="text-sm font-mono w-full break-all">{result}</p>;
+  const [min] = useFibonacciValue();
+  return (
+    <Carousel
+      opts={{
+        align: "start",
+      }}
+      orientation="vertical"
+      className="w-full my-16"
+    >
+      <CarouselContent className="-mt-1 h-[200px] w-full">
+        {result.map((value, index) => (
+          <CarouselItem key={index} className="w-full p-0 basis-0 mb-4">
+            <CardContent className="w-full p-0">
+              <p className="text-sm font-medium w-full text-zinc-600 text-left">Fibonacci({min + index}) =</p>
+              <span className="text-sm font-mono test w-full break-all border border-zinc-200 rounded-lg bg-zinc-50 p-2 mt-2 text-left">
+                {value}
+              </span>
+            </CardContent>
+          </CarouselItem>
+        ))}
+      </CarouselContent>
+      <CarouselPrevious />
+      <CarouselNext />
+    </Carousel>
+  );
 }
 
 function FibonacciNumber() {
@@ -23,7 +49,9 @@ function FibonacciNumber() {
         <p className="text-sm font-medium w-full text-zinc-600 text-left">Fibonacci({value}) =</p>
         <CopyBtn result={result} />
       </div>
-      <p className="text-sm font-mono test w-full break-all border border-zinc-200 rounded-lg bg-zinc-50 p-2 mt-2">{result}</p>
+      <p className="text-sm font-mono test w-full break-all border border-zinc-200 rounded-lg bg-zinc-50 p-2 mt-2 text-left">
+        {result}
+      </p>
     </>
   );
 }
