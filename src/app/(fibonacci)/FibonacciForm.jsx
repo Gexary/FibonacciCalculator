@@ -33,6 +33,7 @@ export function FibonacciForm() {
     (e) => {
       e.preventDefault();
       const formData = new FormData(e.target);
+
       if (option === "oneNumber") {
         const value = convertToNumber(formData.get("value"));
         if (value !== null) sendValue(value);
@@ -58,31 +59,25 @@ export function FibonacciForm() {
 
 export function CalculateButton() {
   const isLoading = useIsLoading();
-  return isLoading ? (
-    <Button disabled>
-      <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />
-      Processing...
-    </Button>
-  ) : (
-    <Button type="submit">
-      <Calculator className="mr-2 h-4 w-4" /> Calculate
+  return (
+    <Button type="submit" disabled={isLoading}>
+      {isLoading ? <ReloadIcon className="mr-2 h-4 w-4 animate-spin" /> : <Calculator className="mr-2 h-4 w-4" />}
+      {isLoading ? "Processing..." : "Calculate"}
     </Button>
   );
 }
 
+const MIN_VALUE = -100_000_000;
+const MAX_VALUE = 100_000_000;
 function NumberInput() {
   const [value, setValue] = useState(100);
 
   const handleChange = (inputValue) => {
     let numericValue = inputValue.replace(/\s+/g, "");
-    if (numericValue === "" || /^-?\d*$/.test(numericValue)) {
-      let numberValue = parseInt(numericValue, 10);
-      if (!isNaN(numberValue) && numberValue < 0) {
-        setValue(formatNumberWithSpaces(numericValue));
-      } else if (numericValue === "" || (numberValue >= 0 && numericValue !== "00")) {
-        setValue(formatNumberWithSpaces(numericValue));
-      }
-    }
+    if (/^-?\d*$/.test(numericValue) && numericValue !== "") {
+      const numberValue = Math.max(Math.min(parseInt(numericValue), MAX_VALUE), MIN_VALUE);
+      setValue(isNaN(numberValue) ? 0 : numberValue);
+    } else setValue(0);
   };
 
   const formatNumberWithSpaces = (num) => {
@@ -96,7 +91,7 @@ function NumberInput() {
   const decrease = () => {
     setValue((value) => value - 1);
   };
-
+  console.log(value);
   return (
     <div className="flex items-center justify-between w-full">
       <Button
@@ -104,6 +99,7 @@ function NumberInput() {
         size="icon"
         className="h-8 w-8 shrink-0 rounded-full"
         disabled={value <= -100_000_000}
+        type="button"
         onClick={decrease}
       >
         <MinusIcon className="h-4 w-4" />
@@ -113,7 +109,7 @@ function NumberInput() {
         <input
           autoComplete="off"
           className="inline-block text-7xl font-bold tracking-tighter text-center outline-none w-full"
-          value={value}
+          value={formatNumberWithSpaces(value)}
           name="value"
           onChange={(e) => handleChange(e.target.value)}
         />
@@ -125,6 +121,7 @@ function NumberInput() {
         className="h-8 w-8 shrink-0 rounded-full"
         disabled={value >= 100_000_000}
         onClick={increase}
+        type="button"
       >
         <PlusIcon className="h-4 w-4" />
         <span className="sr-only">Increase</span>
@@ -143,7 +140,7 @@ function NumberRangeInput() {
         <Separator orientation="vertical" />
         <Input name="valueMax" placeholder="End" value={range[1]} onChange={(e) => setRange([range[0], e.target.value])} />
       </div>
-      <Slider max={500} min={range[0]} step={1} value={range} onValueChange={setRange} />
+      <Slider max={500} min={0} step={1} value={range} onValueChange={setRange} />
     </>
   );
 }

@@ -16,9 +16,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="h-full">
-      <body
-        className={cn(GeistSans.variable, GeistMono.variable, "h-full flex items-center justify-center", GeistSans.className)}
-      >
+      <body className={cn(GeistSans.variable, GeistMono.variable, "h-full flex items-start justify-center", GeistSans.className)}>
         {children}
       </body>
     </html>

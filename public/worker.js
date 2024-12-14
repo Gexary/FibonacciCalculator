@@ -10,15 +10,21 @@ const memo = {};
 
 function multiplyMatrix(a, b) {
   return [
-    [a[0][0] * b[0][0] + a[0][1] * b[1][0], a[0][0] * b[0][1] + a[0][1] * b[1][1]].map(BigInt),
-    [a[1][0] * b[0][0] + a[1][1] * b[1][0], a[1][0] * b[0][1] + a[1][1] * b[1][1]].map(BigInt),
+    [
+      BigInt(a[0][0]) * BigInt(b[0][0]) + BigInt(a[0][1]) * BigInt(b[1][0]),
+      BigInt(a[0][0]) * BigInt(b[0][1]) + BigInt(a[0][1]) * BigInt(b[1][1]),
+    ],
+    [
+      BigInt(a[1][0]) * BigInt(b[0][0]) + BigInt(a[1][1]) * BigInt(b[1][0]),
+      BigInt(a[1][0]) * BigInt(b[0][1]) + BigInt(a[1][1]) * BigInt(b[1][1]),
+    ],
   ];
 }
 
 function matrixPower(matrix, n) {
   let result = [
-    [1, 0],
-    [0, 1],
+    [BigInt(1), BigInt(0)],
+    [BigInt(0), BigInt(1)],
   ];
   while (n > 0) {
     if (n % 2 !== 0) {
@@ -51,9 +57,9 @@ function fibonacciRange(start, end) {
   let fibSequence = [];
   let f0 = fibonacci(start);
   let f1 = fibonacci(start + 1);
-  fibSequence.push(f0);
+  fibSequence.push(f0.toString());
   for (let i = start + 1; i <= end; i++) {
-    fibSequence.push(f1);
+    fibSequence.push(f1.toString());
     let nextFib = f0 + f1;
     f0 = f1;
     f1 = nextFib;

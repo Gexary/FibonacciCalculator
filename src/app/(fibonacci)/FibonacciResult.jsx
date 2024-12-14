@@ -49,7 +49,7 @@ function FibonacciNumber() {
         <p className="text-sm font-medium w-full text-zinc-600 text-left">Fibonacci({value}) =</p>
         <CopyBtn result={result} />
       </div>
-      <p className="text-sm font-mono test w-full break-all border border-zinc-200 rounded-lg bg-zinc-50 p-2 mt-2 text-left">
+      <p className="text-sm font-mono w-full break-all border border-zinc-200 rounded-lg bg-zinc-50 p-2 mt-2 text-left">
         {result}
       </p>
     </>
